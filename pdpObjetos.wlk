@@ -81,11 +81,17 @@ class BarcoPirata {
     method cantidadTripulanteaUtilies() = (tripulantes.filter({tripulante=>mision.esUtil(tripulante)})).size()
     method tieneSuficienteTrip()=
     tripulantes.size() >= capacidad * 0.9 
-    method esVulnerable(barcoAtacante)
+    method esVulnerable(barcoAtacante)=
+    self.cantidadDeTripulantes() <= (barcoAtacante.cantidadDeTripulantes()) / 2
+
+    method cantidadDeTripulantes() = tripulantes.size()
+    method itemRaro()=
 }
 class CiudadCostera{
+    var cantidadHabitantes 
     method puedeSerSaqueado(saqueador)=
     50 <= saqueador.ebriedad()
-    method esVulnerable(barcoAtacante)
+    method esVulnerable(barcoAtacante)=
+    barcoAtacante.tripulantes().size() <= cantidadHabitantes* 0.4 || barcoAtacante.tripiulantes().all({tripulante=>tripulante.estaPasadoDeGrog()})
 
 }
