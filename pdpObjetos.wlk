@@ -43,17 +43,31 @@ class Pirata {
     method cantidadItems()=
     items.size()
 
-    method seAnimaaSaquear(objetivo){
+    method seAnimaaSaquear(objetivo)=
         objetivo.puedeSerSaqueado(self)
 
-    }
+    
     method noTieneMasDeMonedas(cantidad)=
     self.monedas() > cantidad
 
     method estaPasadoDeGrog()=
     90 <= self.ebriedad() && items.contains("botellaDeGrog")
+    method tomarTratoGrog(ciudad){
+        ebriedad += 5
+        monedas= monedas- ciudad.precioEntrada()
+
+    }
+    method puedePagar(ciudad)= monedas >= ciudad.precioEntrada()
 
 
+
+}
+class PirataEspia inherits Pirata{
+    override method estaPasadoDeGrog()= false
+
+    override method seAnimaaSaquear(objetivo)= super(objetivo) && self.tiene("permisoDeLaCorona")
+
+    
 
 }
 class BarcoPirata {
@@ -85,13 +99,40 @@ class BarcoPirata {
     self.cantidadDeTripulantes() <= (barcoAtacante.cantidadDeTripulantes()) / 2
 
     method cantidadDeTripulantes() = tripulantes.size()
-    method itemRaro()=
+    method itemRaro()= self.itemsBarco().min({item=>self.cantidadDePiratasQueTienen(item)})
+
+    method itemsBarco()= tripulantes.flatMap({tripulante=>tripulante.items()})
+
+    method cantidadDePiratasQueTienen(item)= tripulantes.count({tripulante=>tripulante.tiene(item)})
+    method anclarBarco(unaCiudad){
+        self.tripulantesTomanGrog(unaCiudad)
+        self.perderTripulanteMasEbrio(unaCiudad)
+    }
+    method tripulantesTomanGrog(unaCiudad){
+        self.tripulantesQuePuedenPagar(unaCiudad).forEach{tripulante=>tripulante.tomarTratoGrog(unaCiudad)}
+
+    }
+    method perderTripulanteMasEbrio(unaCiudad){
+        const elmasEbrio= self.tripulanteMasEbrio()
+        tripulantes.remove(elmasEbrio)
+        unaCiudad.aniadirTrip(elmasEbrio)
+
+
+    }
+    method tripulantesQuePuedenPagar(unaCiudad)= tripulantes.filter({tripulante=>tripulante.puedePagar(unaCiudad)})
+    method tripulanteMasEbrio()= tripulantes.max({tripulante=>tripulante.ebriedad()})
+
 }
 class CiudadCostera{
     var cantidadHabitantes 
+    var property precioEntrada
     method puedeSerSaqueado(saqueador)=
     50 <= saqueador.ebriedad()
     method esVulnerable(barcoAtacante)=
     barcoAtacante.tripulantes().size() <= cantidadHabitantes* 0.4 || barcoAtacante.tripiulantes().all({tripulante=>tripulante.estaPasadoDeGrog()})
+    method aniadirTrip(unTripulante){
+        cantidadHabitantes+=1
+
+    }
 
 }
