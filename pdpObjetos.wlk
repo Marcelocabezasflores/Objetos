@@ -136,3 +136,57 @@ class CiudadCostera{
     }
 
 }
+/**********************************************************************************************************/
+// LA HORDA 
+class Personaje{
+    const property fuerza = 0
+    const property inteligencia 
+    var rol  
+    method potencial() = fuerza * 10 +  rol.extra()
+    method esGroso()= self.esInteligente() || self.suRolEsGroso(self)
+    method esInteligente()= false
+    method suRolEsGroso(alguien)= rol.esGrosoo(alguien)
+}
+class Guerrero{
+    var property extra = 100
+    method esGrosoo(alguien)= alguien.fuerza() > 50
+
+}
+class Cazador{
+    var mascota
+    var property extra =mascota.potencialOfencivo()
+    method esGrosoo(alguien)= mascota.esLongeva()
+
+
+}
+class Brujo{
+   var property extra =  0 
+   method esGrosoo()=true
+}
+// PERSONALES INSTANCIADOS
+class Orco inherits Personaje{
+
+    override method potencial()= super()* 1.1
+
+}
+class Humano inherits Personaje{
+    override method esInteligente()= inteligencia > 50
+
+
+
+}
+class Mascota{
+    var edad
+    var fuerza
+    method potencialOfencivo()
+    method esLongeva()= edad> 10
+
+}
+class MarcotaConGarra inherits Mascota{
+    override method potencialOfencivo()= fuerza *2
+}
+class MarcotaSinGarra inherits Mascota{
+    override method potencialOfencivo()= fuerza
+}
+
+
